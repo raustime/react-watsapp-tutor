@@ -26,7 +26,7 @@ function Chat() {
       db.collection("rooms")
         .doc(roomId)
         .collection("messages")
-        //.orderBy("timestamp", "asc")
+        .orderBy("timestamp", "asc")
         .onSnapshot((snapshot) =>
           setMessages(snapshot.docs.map((doc) => doc.data()))
         );
@@ -38,11 +38,11 @@ function Chat() {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    console.log("You typed >>>", input);
+    /*console.log("You typed >>>", input);*/
     db.collection('rooms').doc(roomId).collection('messages').add({
       message: input,
       name:user.displayName,
-      timestap:firebase.firestore.FieldValue.serverTimestamp()
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
     });
     setInput("");
   };
@@ -52,7 +52,9 @@ function Chat() {
         <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <div className="chat_headerInfo">
           <h3>{roomName}</h3>
-          <p>Last seen at...</p>
+          <p>Last seen{" "}
+          {new Date(messages[messages.length-1]?.timestamp?.toDate()).toUTCString()}
+          </p>
         </div>
         <div className="chat_headerRight">
           <IconButton>
